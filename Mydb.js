@@ -2,6 +2,7 @@ require("dotenv").config();
 var dbconf = require("./dbconf.js");
 var mysql = require("mysql");
 var PrettyTable = require("cli-table2");
+var colors = require("colors");
 
 /**
  * Mydb
@@ -76,9 +77,9 @@ var Mydb = function(myTable, mySearchField) {
             // console.log(property + ": " + results[i][property]);
 
             if(top_row === undefined || top_row.length < Object.keys(results[i]).length ){
-              top_row.push(property);
+              top_row.push(property.red);
             }
-            cells.push(results[i][property]);
+            cells.push(results[i][property].toString().green);
           }
         }
 
@@ -201,9 +202,9 @@ var Mydb = function(myTable, mySearchField) {
         if(resultsArray[i].hasOwnProperty(property)){
           // console.log(property + ": " + resultsArray[i][property]);
           if(top_row === undefined || top_row.length < Object.keys(resultsArray[i]).length ){
-            top_row.push(property);
+            top_row.push(property.red);
           }
-          cells.push(resultsArray[i][property]);
+          cells.push(resultsArray[i][property].toString().green);
         }
       }
 
@@ -233,9 +234,9 @@ var Mydb = function(myTable, mySearchField) {
       if(resultsObject.hasOwnProperty(property)){
         // console.log(property + ": " + resultsObject[property]);
         if(top_row === undefined || top_row.length < Object.keys(resultsObject).length){
-          top_row.push(property);
+          top_row.push(property.red);
         }
-        cells.push(resultsObject[property]);
+        cells.push(resultsObject[property].toString().green);
       }
     }
 
@@ -354,7 +355,7 @@ var Mydb = function(myTable, mySearchField) {
         for(var property in results[i]){
           if(property === "Field"){
             // console.log(results[i][property]);
-            cells.push(results[i][property]);
+            cells.push(results[i][property].toString().green);
           }
         }
 
@@ -362,7 +363,7 @@ var Mydb = function(myTable, mySearchField) {
       }
 
       var Table = new PrettyTable({
-        head: ["Field"],
+        head: ["Field".red],
       });
       
       for(var r=0; r < rows.length; r++){

@@ -11,7 +11,7 @@ products.connect();
 // products.querySingleRec("select * from products as p where p.item_id='1';", loopObject);
 // products.querySingleRec("select * from products as p where p.item_id='1';");
 
-products.query("select * from products as p where p.item_id='1';");
+// products.query("select item_id,sku,product_name,department_name,price from products as p where p.item_id='1';");
 
 // products.querySingleRec("select * from products as p where p.item_id='1';");
 
@@ -45,6 +45,6 @@ var item = {
 
 // products.countByID(20);
 
-// products.getColumns();
+products.getColumns();
 // products.columnExists('sku');
 products.end();
