@@ -1,5 +1,7 @@
+require("dotenv").config();
+var dbconf = require("./dbconf.js");
 var mysql = require("mysql");
-var PrettyTable = require("cli-table");
+var PrettyTable = require("cli-table2");
 
 /**
  * Mydb
@@ -13,15 +15,9 @@ var Mydb = function(myTable, mySearchField) {
   this.dbTable = (myTable === undefined) ? "products" : myTable;
   this.searchField = (mySearchField === undefined) ? "item_id" : mySearchField;
 
-  this.connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root", 
-    password: "4dXK36obV!1u",
-    database: "bamazon",
-  });
+  this.connection = mysql.createConnection(dbconf.credentials);
   
-  // NOTE: for the same reason we have the end() function we have the connect() function which must be ran
+  // NOTE: Before running queries we must connect to the database first. We have this function so we can initiate a connection
   // through the constructor object before trying to run any queries. 
   this.connect = function(debug=false){
     var that = this;
@@ -69,14 +65,36 @@ var Mydb = function(myTable, mySearchField) {
       console.log(results.length + " affected rows!");
       console.log("_".repeat(sql.length));
 
+      var top_row = [];
+      var rows = [];
+
       for (var i=0; i < results.length; i++){
+        var cells = [];
+
         for(var property in results[i]){
           if(results[i].hasOwnProperty(property)){
-            console.log(property + ": " + results[i][property]);
+            // console.log(property + ": " + results[i][property]);
+
+            if(top_row === undefined || top_row.length < Object.keys(results[i]).length ){
+              top_row.push(property);
+            }
+            cells.push(results[i][property]);
           }
         }
-        console.log("_".repeat(sql.length));
+
+        // console.log("_".repeat(sql.length));
+        rows.push(cells);  
       }
+
+      var Table = new PrettyTable({
+        head: top_row,
+      });
+      
+      for(var r=0; r < rows.length; r++){
+        Table.push(rows[r]);
+      }
+  
+      console.log(Table.toString());
     });
   };
   
@@ -173,23 +191,65 @@ var Mydb = function(myTable, mySearchField) {
   //===========================[ Default Callbacks ]=================================
   // Loop through an array of objects
   this.loopArrayObject = function (resultsArray){
+    var top_row = [];
+    var rows = [];
+
     for(var i=0; i < resultsArray.length; i++){
+      var cells = [];
+
       for(var property in resultsArray[i]){
         if(resultsArray[i].hasOwnProperty(property)){
-          console.log(property + ": " + resultsArray[i][property]);
+          // console.log(property + ": " + resultsArray[i][property]);
+          if(top_row === undefined || top_row.length < Object.keys(resultsArray[i]).length ){
+            top_row.push(property);
+          }
+          cells.push(resultsArray[i][property]);
         }
       }
-      console.log("_______________________________________");
-    };
+
+      // console.log("_______________________________________");
+      rows.push(cells);    
+    }
+    
+    var Table = new PrettyTable({
+      head: top_row,
+    });
+    
+    for(var r=0; r < rows.length; r++){
+      Table.push(rows[r]);
+    }
+
+    console.log(Table.toString());
   };
 
   // Loop through an object
   this.loopObject = function(resultsObject){
+    var top_row = [];
+    var rows = [];
+    var cells = [];
+
     for(var property in resultsObject){
+
       if(resultsObject.hasOwnProperty(property)){
-        console.log(property + ": " + resultsObject[property]);
+        // console.log(property + ": " + resultsObject[property]);
+        if(top_row === undefined || top_row.length < Object.keys(resultsObject).length){
+          top_row.push(property);
+        }
+        cells.push(resultsObject[property]);
       }
     }
+
+    rows.push(cells);
+
+    var Table = new PrettyTable({
+      head: top_row,
+    });
+    
+    for(var r=0; r < rows.length; r++){
+      Table.push(rows[r]);
+    }
+
+    console.log(Table.toString());
   };
 
   // Just return the results
@@ -286,13 +346,30 @@ var Mydb = function(myTable, mySearchField) {
     }
 
     var justColumns = function(results){
+      var rows = [];
+
       for(var i=0; i < results.length; i++){
+        var cells = [];
+
         for(var property in results[i]){
           if(property === "Field"){
-            console.log(results[i][property]);
+            // console.log(results[i][property]);
+            cells.push(results[i][property]);
           }
         }
+
+        rows.push(cells);   
       }
+
+      var Table = new PrettyTable({
+        head: ["Field"],
+      });
+      
+      for(var r=0; r < rows.length; r++){
+        Table.push(rows[r]);
+      }
+  
+      console.log(Table.toString());
     };
 
     return this.querySelect("DESCRIBE " + table, justColumns);
