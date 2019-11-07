@@ -1,5 +1,6 @@
 var inquirer = require("inquirer");
 var Mydb = require("./Mydb");
+var PrettyTable = require("cli-table2");
 var colors = require("colors");
 
 function products_for_sale(){
@@ -39,17 +40,21 @@ function cart_checkout(itemID){
   }).then(function(answer){
     let restart_callback = function(successObj){
       if(successObj.success){
+        var Table = new PrettyTable({
+          head: ["Sub Total".yellow, "Quantity".yellow, "Grand Total".yellow],
+        });
+        
+        Table.push(["$".green + successObj.sub_total.toString().green, successObj.quantity.toString().green, "$".green + successObj.grand_total.toString().green]);
+          
         console.log("Your item was purchased successfully!".cyan);
-        console.log("Sub Total: $".yellow + successObj.sub_total);
-        console.log("Quantity: $".yellow + successObj.quantity);
-        console.log("Grand Total: $".yellow + successObj.grand_total);
+        console.log(Table.toString());
       }else{
         console.log("Insufficient Quantity!\r\n".red);
       }
 
       console.log("_".repeat(60).white);
       products_for_sale();
-    }
+    };
 
     var products = new Mydb();
     products.connect();
@@ -58,39 +63,4 @@ function cart_checkout(itemID){
   })
 }
 
-products_for_sale()
-
-////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-// products.connect();
-// products.querySelect("select * from products as p where p.department_name='clothes' LIMIT 1;", loopArrayObject);
-// products.querySelect("select item_id,sku,product_name,department_name,price from products as p where p.department_name='clothes';");
-// products.querySingleRec("select item_id,sku,product_name,department_name,price from products as p where p.department_name='clothes';");
-// products.querySingleRec("select * from products as p where p.item_id='1';", loopObject);
-// products.querySingleRec("select * from products as p where p.item_id='1';");
-// products.query("select item_id,sku,product_name,department_name,price from products as p where p.item_id='1';");
-// products.querySingleRec("select * from products as p where p.item_id='1';");
-// products.updateFields({product_name:"Ship Your Cool Idea"}, {item_id: 12});
-// products.delete({sku:'T-SHIRT-WOO-LOGO'});
-// var item = {
-//   sku: "T-SHIRT-WOO-LOGO",
-//   product_name: "Woo Logo",
-//   department_name: "clothes",
-//   price: 44,
-//   stock_qty: 100,
-//   long_description: "It's just a logo...",
-//   weight: 1
-// };
-// products.create(item);
-// products.fetchValue(22,"product_name");
-// products.searchField = "sku";
-// products.fetchRowsLike("HOODIE")
-// var fields = ['sku','product_name','price'];
-// products.fetchFields(22,'sku');
-// products.searchField = "price";
-// var ids = ["HOODIE", "YOUR"];
-// var ids = [22, 23, 24];
-// products.fetchIDArray(ids);
-// products.countByID(20);
-// products.getColumns();
-// products.columnExists('sku');
-// products.end();
+products_for_sale();

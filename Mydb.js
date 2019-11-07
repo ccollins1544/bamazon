@@ -71,8 +71,6 @@ var Mydb = function(myTable, mySearchField) {
 
         for(var property in results[i]){
           if(results[i].hasOwnProperty(property)){
-            // console.log(property + ": " + results[i][property]);
-
             if(top_row === undefined || top_row.length < Object.keys(results[i]).length ){
               top_row.push(property.red);
             }
@@ -80,7 +78,6 @@ var Mydb = function(myTable, mySearchField) {
           }
         }
 
-        // console.log("_".repeat(sql.length).white);
         rows.push(cells);  
       }
 
@@ -118,7 +115,6 @@ var Mydb = function(myTable, mySearchField) {
         results_arr.push(row);
       }
 
-      // console.log("RESULTS",results_arr);
       return callback(results_arr);
     });
   };
@@ -142,7 +138,6 @@ var Mydb = function(myTable, mySearchField) {
           }
         }
 
-        // console.log("ROW",row);
         return callback(row);
       }
     });
@@ -206,9 +201,9 @@ var Mydb = function(myTable, mySearchField) {
 
       return { 
         success: true, 
-        sub_total: resultsObject.sub_total, 
+        sub_total: (resultsObject.sub_total).toFixed(2), 
         quantity: resultsObject.quantity, 
-        grand_total: resultsObject.grand_total 
+        grand_total: (resultsObject.grand_total).toFixed(2)
       };
 
     }).then(function(successObj){
@@ -249,7 +244,6 @@ var Mydb = function(myTable, mySearchField) {
 
       for(var property in resultsArray[i]){
         if(resultsArray[i].hasOwnProperty(property)){
-          // console.log(property + ": " + resultsArray[i][property]);
           if(top_row === undefined || top_row.length < Object.keys(resultsArray[i]).length ){
             top_row.push(property.red);
           }
@@ -257,7 +251,6 @@ var Mydb = function(myTable, mySearchField) {
         }
       }
 
-      // console.log("_______________________________________");
       rows.push(cells);    
     }
     
@@ -281,7 +274,6 @@ var Mydb = function(myTable, mySearchField) {
     for(var property in resultsObject){
 
       if(resultsObject.hasOwnProperty(property)){
-        // console.log(property + ": " + resultsObject[property]);
         if(top_row === undefined || top_row.length < Object.keys(resultsObject).length){
           top_row.push(property.red);
         }
@@ -415,7 +407,6 @@ var Mydb = function(myTable, mySearchField) {
 
         for(var property in results[i]){
           if(property === "Field"){
-            // console.log(results[i][property]);
             cells.push(results[i][property].toString().green);
           }
         }
