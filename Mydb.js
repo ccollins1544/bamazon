@@ -17,14 +17,11 @@ var Mydb = function(myTable, mySearchField) {
   this.searchField = (mySearchField === undefined) ? "item_id" : mySearchField;
 
   this.connection = mysql.createConnection(dbconf.credentials);
-  
-  // NOTE: Before running queries we must connect to the database first. We have this function so we can initiate a connection
-  // through the constructor object before trying to run any queries. 
   this.connect = function(debug=false){
     var that = this;
     this.connection.connect(function(error){
       if(error) throw error;
-      if(debug) console.log("Connected as id " + that.connection.threadId);
+      if(debug) console.log("Connected as id ".cyan + that.connection.threadId.toString().cyan);
     });
   };
 
@@ -45,12 +42,12 @@ var Mydb = function(myTable, mySearchField) {
       function(error, results){
         if(error) throw error;
 
-        console.log(results.affectedRows + " " + that.dbTable + " inserted!\r\n");
+        console.log(results.affectedRows.toString().cyan + " " + that.dbTable.toString().cyan + " inserted!\r\n".cyan);
         cb(results);
       }
     );
 
-    console.log(query.sql);
+    console.log("\r\n\r\n" + query.sql.yellow);
   };
 
   //===========================[ READ ]=============================================
@@ -62,9 +59,9 @@ var Mydb = function(myTable, mySearchField) {
     this.connection.query(sql, function(error, results, fields){
       if(error) throw error;
     
-      console.log("\r\n"+sql);
-      console.log(results.length + " affected rows!");
-      console.log("_".repeat(sql.length));
+      console.log("\r\n\r\n" + sql.yellow);
+      console.log(results.length.toString().cyan + " affected rows!".cyan);
+      console.log("_".repeat(sql.length).white);
 
       var top_row = [];
       var rows = [];
@@ -83,7 +80,7 @@ var Mydb = function(myTable, mySearchField) {
           }
         }
 
-        // console.log("_".repeat(sql.length));
+        // console.log("_".repeat(sql.length).white);
         rows.push(cells);  
       }
 
@@ -107,9 +104,9 @@ var Mydb = function(myTable, mySearchField) {
     this.connection.query(sql, function(error, results){
       if(error) throw error;
 
-      console.log("\r\n"+sql);
-      console.log("Selected " + results.length + " number of rows.");
-      console.log("_".repeat(sql.length));
+      console.log("\r\n\r\n"+sql.yellow);
+      console.log("Selected ".cyan + results.length.toString().cyan + " number of rows.".cyan);
+      console.log("_".repeat(sql.length).white);
       
       for (var i=0; i < results.length; i++){
         var row = [];
@@ -133,9 +130,9 @@ var Mydb = function(myTable, mySearchField) {
     this.connection.query(sql, function(error, results){
       if(error) throw error;
       
-      console.log("\r\n"+sql);
-      console.log("Selected " + results.length + " number of rows.");
-      console.log("_".repeat(sql.length));
+      console.log("\r\n\r\n"+sql.yellow);
+      console.log("Selected ".cyan + results.length.toString().cyan + " number of rows.".cyan);
+      console.log("_".repeat(sql.length).white);
       
       for (var i=0; i < results.length; i++){
         var row = [];
@@ -162,12 +159,64 @@ var Mydb = function(myTable, mySearchField) {
       function(error, results){
         if(error) throw error;
 
-        console.log(results.affectedRows + " " + that.dbTable + " updated!\r\n");
+        console.log(results.affectedRows.toString().cyan + " " + that.dbTable.toString().cyan + " updated!\r\n".cyan);
         cb(results);
       }
     );
 
-    console.log(query.sql);
+    console.log("\r\n\r\n" + query.sql.yellow);
+  };
+
+  this.updateStockQty = function(id, qty_decrease, callback){
+    var sql = "SELECT stock_qty,price FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
+
+    var that = this;
+    let promiseMeThis = new Promise(function(resolve, reject){
+      that.connection.query(sql, function(error, results){
+        if(error){
+          return reject(error);
+        }
+        
+        var subTotal = 0;
+        var grandTotal = 0;
+        var updated_stock_qty = 0;
+        if(results[0].hasOwnProperty('stock_qty') && results[0].hasOwnProperty('price')){
+          updated_stock_qty = results[0]['stock_qty'] - qty_decrease;
+          subTotal = results[0]['price'];
+          grandTotal = subTotal*qty_decrease;
+        }
+        
+        resolve({ 
+          new_stock: updated_stock_qty, 
+          sub_total: subTotal, 
+          quantity: qty_decrease, 
+          grand_total: grandTotal
+        });
+      });
+
+    });
+
+    promiseMeThis.then(function(resultsObject){
+      if(resultsObject.new_stock < 0 ) return { success:false, sub_total:0, quantity:0, grand_total:0 };
+
+      var dummyObject = new Mydb(that.dbTable, that.searchField);
+      dummyObject.connect();
+      dummyObject.updateFields({stock_qty: resultsObject.new_stock },{item_id: id}, that.emptyFunction);
+      dummyObject.end();
+
+      return { 
+        success: true, 
+        sub_total: resultsObject.sub_total, 
+        quantity: resultsObject.quantity, 
+        grand_total: resultsObject.grand_total 
+      };
+
+    }).then(function(successObj){
+      return setTimeout(function(){
+        callback(successObj);
+      }, 1000);
+    })
+
   };
 
   //===========================[ DELETE ]===========================================
@@ -181,12 +230,12 @@ var Mydb = function(myTable, mySearchField) {
       function(error, results){
         if(error) throw error;
 
-        console.log(results.affectedRows + " " + that.dbTable + " deleted!\r\n");
+        console.log(results.affectedRows.toString().cyan + " " + that.dbTable.toString().cyan + " deleted!\r\n".toString().cyan);
         cb(results);
       }
     );
 
-    console.log(query.sql);
+    console.log("\r\n\r\n" + query.sql.yellow);
   };
 
   //===========================[ Default Callbacks ]=================================
@@ -251,6 +300,7 @@ var Mydb = function(myTable, mySearchField) {
     }
 
     console.log(Table.toString());
+    return;
   };
 
   // Just return the results
@@ -260,32 +310,41 @@ var Mydb = function(myTable, mySearchField) {
   this.emptyFunction = function(data){ return; }
 
   //===========================[ Helpers ]=================================
-  this.fetchRow = function(id){
+  this.fetchRow = function(id,cb){
     if(id === undefined){ return; } // GTFO
+    if(cb === undefined) cb=this.loopObject;
+    
     var q = "SELECT * FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
-    return this.querySingleRec(q);
+    return this.querySingleRec(q,cb);
+  }
+  
+  this.fetchRows = function(id,cb){
+    if(id === undefined){ return; } // GTFO
+    if(cb === undefined) cb=this.loopArrayObject;
+
+    var q = "SELECT * FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
+    return this.querySelect(q,cb);
   }
 
-  this.fetchRows = function(id){
+  this.fetchRowsLike = function(id,cb){
     if(id === undefined){ return; } // GTFO
-    var q = "SELECT * FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
-    return this.querySelect(q);
-  }
+    if(cb === undefined) cb=this.loopArrayObject;
 
-  this.fetchRowsLike = function(id){
-    if(id === undefined){ return; } // GTFO
     var q = "SELECT * FROM " + this.dbTable + " WHERE " + this.searchField + " LIKE '%" + id + "%';";
-    return this.querySelect(q);
+    return this.querySelect(q,cb);
   }
 
-  this.fetchValue = function(id,field){
+  this.fetchValue = function(id,field,cb){
     if(id === undefined || field === undefined){ return; } // GTFO
+    if(cb === undefined) cb=this.loopObject;
+
     var q = "SELECT " + field + " FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
-    return this.querySingleRec(q);
+    return this.querySingleRec(q,cb);
   }
 
-  this.fetchFields = function(id, fields){
+  this.fetchFields = function(id, fields, cb){
     if(id === undefined || fields === undefined){ return; } // GTFO
+    if(cb === undefined) cb=this.loopObject;
 
     var fieldNames = "`";
     if(fields instanceof Array && typeof (fields) == 'object'){
@@ -296,7 +355,7 @@ var Mydb = function(myTable, mySearchField) {
     fieldNames += "`";
 
     var q = "SELECT " + fieldNames + " FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
-    return this.querySingleRec(q);
+    return this.querySingleRec(q,cb);
   }
 
   this.fetchIDArray = function (idsArray){
@@ -336,9 +395,11 @@ var Mydb = function(myTable, mySearchField) {
     return this.querySelect(qAND, tryQOR);
   };
 
-  this.countByID = function(id){
+  this.countByID = function(id,cb){
+    if(cb === undefined) cb=this.loopObject;
+
     var q = "SELECT COUNT(*) as `count` FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
-    return this.querySingleRec(q);
+    return this.querySingleRec(q,cb);
   };
 
   this.getColumns = function(table){
@@ -387,14 +448,14 @@ var Mydb = function(myTable, mySearchField) {
           if(property === "Field"){
             if(results[i][property] == col){
               console.log(true);
-              return;
+              return true;
             }
           }
         }
       }
 
       console.log(false);
-      return;
+      return false;
     };
 
     return this.querySelect("DESCRIBE " + table, columnFound);
