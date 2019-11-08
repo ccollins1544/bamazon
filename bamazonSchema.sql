@@ -53,7 +53,9 @@ values (
 -- 
 -- [READ Data]
 -- desc products;
-select * from products p;
+select * from products as p;
+select * from products as p where p.stock_qty < 5;
+
 -- 
 -- desc departments;
 select * from departments;

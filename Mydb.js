@@ -162,6 +162,9 @@ var Mydb = function(myTable, mySearchField) {
     console.log("\r\n\r\n" + query.sql.yellow);
   };
 
+  // Allow this to work to + or - qty. So don't only focus on qty_decrease...
+  // maybe change to qty_change and detect + or - by if(qty_change > 0)
+  // Math.abs(qty_change)
   this.updateStockQty = function(id, qty_decrease, callback){
     var sql = "SELECT stock_qty,price FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
 
