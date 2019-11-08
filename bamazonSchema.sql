@@ -41,21 +41,5 @@ values (
   , 250
 );
 
---
 -- [Grant Access to Node]
 -- ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
--- 
--- [Add missing columns]
--- alter table bamazon.products add product_sales decimal(12,2) not null default 0;
--- alter table bamazon.products add sku varchar(100) default null;
--- alter table bamazon.products alter price set default 0;
--- update products set department_name = 'clothes' where sku like '%hoodie%' or sku like '%t-shirt%';
--- 
--- [READ Data]
--- desc products;
-select * from products as p;
-select * from products as p where p.stock_qty < 5;
-
--- 
--- desc departments;
-select * from departments;

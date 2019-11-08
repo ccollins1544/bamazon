@@ -58,7 +58,7 @@ function cart_checkout(itemID){
 
     var products = new Mydb();
     products.connect();
-    products.updateStockQty(itemID, answer.how_many, restart_callback)
+    products.updateStockQty(itemID, (answer.how_many*(-1)), restart_callback)
     products.end();
   })
 }

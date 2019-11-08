@@ -1,0 +1,16 @@
+"item_id","sku","product_name","department_name","price","stock_qty","published","long_description","additional_info","weight","timestamp","product_sales"
+1,WOO-SINGLE-2,Woo Single #2,electronics,3.00,10,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+3,WOO-SINGLES,Woo Singles,electronics,55.00,100,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+4,WOO-ALBUM-4,Woo Album #4,electronics,9.00,4,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+7,WOO-ALBUM-1,Woo Album #1,electronics,9.00,3,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+8,POSTER-WOO-LOGO,Woo Logo,electronics,15.00,90,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+10,POSTER-PREMIUM-QUALITY,Premium Quality,electronics,15.00,100,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+13,HOODIE-WOO-LOGO,Woo Logo,clothes,35.00,2,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+14,HOODIE-NINJA-SILHOUETTE,Ninja Silhouette,clothes,30.00,100,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+18,HOODIE-SHIP-YOUR-IDEA,Ship Your Idea,clothes,30.00,3,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+20,HOODIE-SHIP-YOUR-IDEA-BLACK-L,"Ship Your Idea - Black, L",clothes,35.00,90,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+21,T-SHIRT-HAPPY-NINJA,Happy Ninja,clothes,18.00,93,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+24,T-SHIRT-SHIP-YOUR-IDEA,Ship Your Idea,clothes,20.00,100,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+26,T-SHIRT-SHIP-YOUR-IDEA-BLACK,Ship Your Idea - Black,clothes,20.00,92,1,"...","...",0.00,"2019-11-03 18:26:28",0.00
+31,,Red Hat,clothes,11.10,22,1,"nice hat",,0.00,"2019-11-07 23:27:16",0.00
+32,,Blue Hat,clothes,11.11,23,1,"ok hat",,0.00,"2019-11-07 23:31:56",0.00

@@ -39,16 +39,16 @@ function products_for_sale(){
   products.connect();
   products.querySelect("select item_id,product_name,price,stock_qty from products");
   products.end();
-  manager_dashboard();
+  return manager_dashboard();
 }
 
 function view_low_inventory(count=5){
   var sql="select item_id,product_name,price,stock_qty from products as p where p.stock_qty < " + count;
   var products = new Mydb();
   products.connect();
-  products.querySelect(sql)
+  products.querySelect(sql);
   products.end();
-  manager_dashboard();
+  return manager_dashboard();
 }
 
 function add_to_inventory(){
@@ -57,18 +57,20 @@ function add_to_inventory(){
   products.querySelect("select item_id,product_name,price,stock_qty from products");
   products.end();
 
-  inquirer.prompt({
-    name: "id",
-    type: "number",
-    message: "Select what item_id you want to add more of:".red,
-    validate: function(id){
-      if(isNaN(id) === false){
-        return true;
+  inquirer.prompt([
+    {
+      name: "id",
+      type: "number",
+      message: "Select what item_id you want to add more of:".red,
+      validate: function(id){
+        if(isNaN(id) === false){
+          return true;
+        }
+        return false;
       }
-      return false;
     }
-  }).then(function(answer){
-    update_inventory(answer.id)
+  ]).then(function(answer){
+    return update_inventory(answer.id);
   });
 }
 
@@ -77,26 +79,92 @@ function update_inventory(item_id){
   products.connect();
   products.fetchFields(item_id,["item_id","product_name","price","stock_qty"]);
 
-  inquirer.prompt({
-    name: "add_more",
-    type: "number",
-    message: "How much more of this product [item_id: ".red + item_id.toString().yellow + "] would you like to add to inventory?".red,
-    validate: function(qty){
-      if(isNaN(qty) === false){
-        return true;
-      }else{
-        return false;
+  inquirer.prompt([
+    {
+      name: "add_more",
+      type: "number",
+      message: "How much more of this product [item_id: ".red + item_id.toString().yellow + "] would you like to add to inventory?".red,
+      validate: function(qty){
+        if(isNaN(qty) === false){
+          return true;
+        }else{
+          return false;
+        }
       }
     }
-  }).then(function(answer){
-    console.log("ok we need to add " + answer.add_more + " many more....");
-  });
-}
+  ]).then(function(answer){
+    let restart_callback = function(successObj){
+      if(successObj.success){
+        var Table = new PrettyTable({
+          head: ["Previous Quantity".yellow, "Qty To Add".yellow, "New Quantity".yellow],
+        });
+        
+        Table.push([successObj.previous_qty.toString().green, successObj.quantity.toString().green, successObj.new_stock.toString().green]);
+          
+        console.log("Stock Qty Updated Successfully!".cyan);
+        console.log(Table.toString());
+      }else{
+        console.log("Stock Qty Failed to Update!\r\n".red);
+      }
 
+      console.log("_".repeat(60).white);
+      manager_dashboard();
+    };
+
+    products.updateStockQty(item_id, answer.add_more, restart_callback)
+    products.end();
+  });
+  
+  return;
+}
 
 function add_new_product(){
+  console.log("Preparing to add new product. We'll need to know the product name, department name, price, stock quantity, and a product description.".yellow)
+  inquirer.prompt([
+    {
+      name: "product_name",
+      type: "input",
+      message: "Product Name?".red,
+    },
+    {
+      name: "department_name",
+      type: "input",
+      message: "Department Name?".red,
+    },
+    {
+      name: "price",
+      type: "input",
+      message: "Price?".red,
+    },
+    {
+      name: "stock_qty",
+      type: "number",
+      message: "Stock Quantity?".red,
+      validate: function(qty){
+        if(isNaN(qty) === false){
+          return true;
+        }else{
+          return false;
+        }
+      }
+    },
+    {
+      name: "long_description",
+      type: "input",
+      message: "Product Description?".red,
+    }
+  ]).then(function(NewProductObj){
+    var products = new Mydb();
+    products.connect();
+    products.create(NewProductObj);
+    products.end();
 
+    setTimeout(function(){
+      products_for_sale()
+    }, 1000);
+
+    return manager_dashboard();
+  });
 }
-
 
 manager_dashboard();

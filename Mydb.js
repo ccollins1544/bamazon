@@ -162,10 +162,7 @@ var Mydb = function(myTable, mySearchField) {
     console.log("\r\n\r\n" + query.sql.yellow);
   };
 
-  // Allow this to work to + or - qty. So don't only focus on qty_decrease...
-  // maybe change to qty_change and detect + or - by if(qty_change > 0)
-  // Math.abs(qty_change)
-  this.updateStockQty = function(id, qty_decrease, callback){
+  this.updateStockQty = function(id, qty_change, callback){
     var sql = "SELECT stock_qty,price FROM " + this.dbTable + " WHERE " + this.searchField + " = '" + id + "';";
 
     var that = this;
@@ -178,17 +175,27 @@ var Mydb = function(myTable, mySearchField) {
         var subTotal = 0;
         var grandTotal = 0;
         var updated_stock_qty = 0;
+        var previousQty = 0;
         if(results[0].hasOwnProperty('stock_qty') && results[0].hasOwnProperty('price')){
-          updated_stock_qty = results[0]['stock_qty'] - qty_decrease;
+          previousQty = results[0]['stock_qty'];
+
+          if(qty_change < 0){
+            updated_stock_qty = previousQty - Math.abs(qty_change);
+          }else{
+            updated_stock_qty = previousQty + Math.abs(qty_change);
+          }
+          
+          qty_change = Math.abs(qty_change);
           subTotal = results[0]['price'];
-          grandTotal = subTotal*qty_decrease;
+          grandTotal = subTotal*qty_change;
         }
-        
+
         resolve({ 
           new_stock: updated_stock_qty, 
           sub_total: subTotal, 
-          quantity: qty_decrease, 
-          grand_total: grandTotal
+          quantity: qty_change, 
+          grand_total: grandTotal,
+          previous_qty: previousQty
         });
       });
 
@@ -206,7 +213,9 @@ var Mydb = function(myTable, mySearchField) {
         success: true, 
         sub_total: (resultsObject.sub_total).toFixed(2), 
         quantity: resultsObject.quantity, 
-        grand_total: (resultsObject.grand_total).toFixed(2)
+        grand_total: (resultsObject.grand_total).toFixed(2),
+        new_stock: resultsObject.new_stock,
+        previous_qty: resultsObject.previous_qty
       };
 
     }).then(function(successObj){
