@@ -1,3 +1,10 @@
+/**
+ * @package bamazon
+ * @subpackage MyDb 
+ * @author Christopher Collins
+ * @version 2.0.0
+ * @license none (public domain)
+/* ===============[ Libraries ]========================*/
 require("dotenv").config();
 var dbconf = require("./dbconf.js");
 var mysql = require("mysql");

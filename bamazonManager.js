@@ -1,8 +1,16 @@
+/**
+ * @package bamazon
+ * @subpackage Manager 
+ * @author Christopher Collins
+ * @version 2.0.0
+ * @license none (public domain)
+/* ===============[ Libraries ]========================*/
 var inquirer = require("inquirer");
 var Mydb = require("./Mydb");
 var PrettyTable = require("cli-table2");
 var colors = require("colors");
 
+/* ===============[ Main Menu ]========================*/
 function manager_dashboard(){
   inquirer.prompt({ 
     name: "menu_option",
@@ -10,7 +18,6 @@ function manager_dashboard(){
     message: "Select a menu option:",
     choices: ["View Products For Sale","View Low Inventory","Add to Inventory","Add New Product"]
   }).then(function(answer){
-    // console.log(answer);
     next_menu(answer.menu_option);
   });
 }
@@ -34,6 +41,7 @@ function next_menu(selected_menu){
   }
 }
 
+/* ===============[ Sub Menus ]========================*/
 function products_for_sale(){
   var products = new Mydb();
   products.connect();
@@ -167,4 +175,5 @@ function add_new_product(){
   });
 }
 
+/* ===============[ Manager Start Endpoint ]========================*/
 manager_dashboard();

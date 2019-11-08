@@ -1,8 +1,16 @@
+/**
+ * @package bamazon
+ * @subpackage Customer 
+ * @author Christopher Collins
+ * @version 2.0.0
+ * @license none (public domain)
+/* ===============[ Libraries ]========================*/
 var inquirer = require("inquirer");
 var Mydb = require("./Mydb");
 var PrettyTable = require("cli-table2");
 var colors = require("colors");
 
+/* ===============[ Main Menu ]========================*/
 function products_for_sale(){
   var products = new Mydb();
   products.connect();
@@ -25,6 +33,7 @@ function products_for_sale(){
   });
 }
 
+/* ===============[ Sub Menus ]========================*/
 function cart_checkout(itemID){
   inquirer.prompt({
     name: "how_many",
@@ -63,4 +72,5 @@ function cart_checkout(itemID){
   })
 }
 
+/* ===============[ Customer Start Endpoint ]========================*/
 products_for_sale();
