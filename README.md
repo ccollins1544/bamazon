@@ -68,6 +68,7 @@ node bamazonManager.js
 Follow the prompts shown. You'll be presented with a list of options listed in [features section](#features) above. 
 
 ### Video Demo
+* [![bamazon Video Example](https://img.youtube.com/vi/Zl2vLLJnrxU/0.jpg)](https://www.youtube.com/watch?v=Zl2vLLJnrxU)
 
 ### Programs and Libraries Used
 * [Git for Windows](https://gitforwindows.org/)
