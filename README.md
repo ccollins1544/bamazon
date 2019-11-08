@@ -1,14 +1,15 @@
 # bamazon
 
 Amazon-like storefront using mysql and node cli for the client side. 
+
 **Note:** this is a demo proof-of-concept store application not for real purchases. 
 
 ## Features
 * A customer can **select an item for purchase** from a list queried from mysql. After that they can specify how much of that item they want.
-* A manager can **view products for sale**
-* A manager can **view low inventory**
-* A manager can **add to inventory**
-* A manager can **add new product**
+* A manager can **view products for sale**.
+* A manager can **view low inventory**.
+* A manager can **add to inventory**.
+* A manager can **add new product**.
 
 ## Prerequisites
 
@@ -32,7 +33,9 @@ and then do,
 npm install
 ```
 If those two commands ran with no errors you're all set to create the database in the next steps.
+
 6. Use the schema file **bamazonSchema.sql** to create the database **bamazon** with the **products** table.
+
 7. In order for the application to have access to the database we need to setup a `.env` file under the root folder `bamazon`. Use the following template to create your `.env` file,
 ```
 # Database Connection Credentials
