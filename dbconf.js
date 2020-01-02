@@ -1,7 +1,7 @@
 exports.credentials = {
   host: process.env.HOST,
-  port: process.env.PORT,
-  user: process.env.USER, 
+  port: process.env.MYSQLPORT,
+  user: process.env.MYSQLUSER, 
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
 };

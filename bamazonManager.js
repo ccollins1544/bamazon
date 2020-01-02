@@ -6,7 +6,8 @@
  * @license none (public domain)
 /* ===============[ Libraries ]========================*/
 var inquirer = require("inquirer");
-var Mydb = require("./Mydb");
+const path = require("path");
+var Mydb = require(path.resolve(__dirname, "./Mydb"));
 var PrettyTable = require("cli-table2");
 var colors = require("colors");
 

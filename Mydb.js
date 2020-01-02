@@ -5,7 +5,8 @@
  * @version 2.0.0
  * @license none (public domain)
 /* ===============[ Libraries ]========================*/
-require("dotenv").config();
+const path = require('path')
+require("dotenv").config({path: path.resolve(__dirname, '.env')});
 var dbconf = require("./dbconf.js");
 var mysql = require("mysql");
 var PrettyTable = require("cli-table2");
